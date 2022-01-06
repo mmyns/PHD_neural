@@ -9,23 +9,25 @@ import torch.nn.functional as F
 class NeuralNetwork(nn.Module):
     def __init__(self):
         super(NeuralNetwork, self).__init__()
-        self.conv1 = torch.nn.Conv2d(3, 32, 3)
-        self.conv2 = torch.nn.Conv2d(32, 64, 5)
-        self.conv3 = torch.nn.Conv2d(64, 64, 5)
-        self.conv4 = torch.nn.Conv2d(64, 32, 5)
+        self.conv1 = torch.nn.Conv2d(3, 32, 3,stride = 1)
+        self.conv2 = torch.nn.Conv2d(32, 64, 5,stride = 2)
+        self.conv3 = torch.nn.Conv2d(64, 64, 5,stride = 2)
+        self.conv4 = torch.nn.Conv2d(64, 64, 5,stride = 2)
+        self.conv4 = torch.nn.Conv2d(64, 64, 5,stride = 3)
         # an affine operation: y = Wx + b
-        self.fc1 = torch.nn.Linear(8192, 32)  # 6*6 from image dimension
+        self.fc1 = torch.nn.Linear(59904, 32)  # 6*6 from image dimension
         self.fc2 = torch.nn.Linear(32, 32)
         self.fc3 = torch.nn.Linear(32, 2)
 
     def forward(self, x):
         # Max pooling over a (2, 2) window
-        #x= torch.div(x,256)
-        x = F.max_pool2d(F.relu(self.conv1(x)), 2)
+        x = F.max_pool2d(x,3)
+        
+        x = F.relu(self.conv1(x))
         # If the size is a square you can only specify a single number
-        x = F.max_pool2d(F.relu(self.conv2(x)), 2)
-        x = F.max_pool2d(F.relu(self.conv3(x)), 2)
-        x = F.max_pool2d(F.relu(self.conv4(x)), 3)
+        x = F.relu(self.conv2(x))
+        x = F.relu(self.conv3(x))
+        x = F.relu(self.conv4(x))
         x = x.view(-1, self.num_flat_features(x))
         x = F.relu(self.fc1(x))
         x = F.dropout(x,p=0.5, inplace=False)

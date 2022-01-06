@@ -34,7 +34,7 @@ class CustomImageDataset(Dataset):
         for frame in self.frames:
             img_path = self.img_labels[str(frame)].iloc[idx]
             img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
-            img = cv2.resize(img,(448,448))
+            img = cv2.resize(img,(224,224))
             cvuint8 = (img/256).astype(np.uint8)
             toadd = torch.tensor(cvuint8)
             toadd = toadd[np.newaxis, :]
