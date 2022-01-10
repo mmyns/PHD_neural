@@ -16,7 +16,7 @@ root_color_folder = r'/esat/biomeddata/mmaeyens/OPAL/Color_images'
 label_csv= pd.read_csv(os.path.join(label_folder,'processed_labels.csv'))
 
 
-output_dict = {"file":[],"split":[],"color":[]}
+output_dict = {"file":[],"split":[],"color":[],"biopsy": []}
 for frame in frames:
     output_dict[str(frame)] = []
 for label in selected_labels:
@@ -31,6 +31,7 @@ for i,split in enumerate(splits):
             output_dict["file"].append(sample)
             to_join = biopsy + "_" + sample.split(sep = os.sep)[-2] + ".png"
             output_dict["color"].append(os.path.join(color_start,to_join))
+            output_dict["biopsy"].append(biopsy)
             for label in selected_labels:
                 label_value = label_csv[label_csv['Biopsy number'] == biopsy][label].iloc[0]
                 output_dict[label].append(label_value)
